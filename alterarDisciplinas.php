@@ -2,18 +2,19 @@
 
 $message = "";
 
+$host = "localhost";
+$user = "3daw_av1";
+$pass = "3daw_av1";
+$db = "av1_3daw";
+
+$db = new mysqli($host, $user, $pass, $db);
+
+if ($db->connect_error) {
+    die("Nao foi possivel conectar ao banco de dados: " . $db->connect_error);
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    $host = "localhost";
-    $user = "3daw_av1";
-    $pass = "3daw_av1";
-    $db = "av1_3daw";
-
-    $db = new mysqli($host, $user, $pass, $db);
-
-    if ($db->connect_error) {
-        die("Nao foi possivel conectar ao banco de dados: " . $db->connect_error);
-    }
-    
+    $disciplina      = $_POST['disciplina'];
     $nome      = $_POST['nome'];
     $creditos    = $_POST['creditos'];
     $periodo    = $_POST['periodo'];
@@ -23,12 +24,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $message = "<span class='error'> Revise os campos e tente novamente. </span>";
     }
     else{
-        $sql = "Insert into disciplinas (`nome`, `periodo`, `creditos`, `idPreRequisito`) VALUES ('$nome',  '$periodo', '$creditos', '$idPreReq')";
+        
+        $sql = "Update  disciplinas SET nome='$nome',  periodo='$periodo', creditos='$creditos', idPreRequisito='$idPreReq' where nome='$disciplina'";
         if ($db->query($sql)  === true)
-            $message = "<span class='sucess'> Inserido com sucesso </span>";
-        else $message = "<span class='error'> Não  foi possível inserir:  $db->error;</span>";
+            $message = "<span class='sucess'> Alterado com sucesso </span>";
+        else $message = "<span class='error'> Não  foi possível alterar:  $db->error;</span>";
     }   
     
+}else{
+
 }
 ?>
   <!DOCTYPE html>
@@ -47,12 +51,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         </div>
     </header>
 
-    <div class="form">
-        <div class="form-title">
-            <span> Inserir elementos</span>
+    <div  class="form">
+    <div class="form-title">
+            <span> Alterar disciplinas</span>
         </div>
-        <form action="inserirDisciplinas.php" method="POST">
-         
+        <form action="alterarDisciplinas.php" method="POST">
+            <?php
+                    $sql = "SELECT nome FROM disciplinas";
+                    $result = $db->query($sql);  
+
+                    ?>
+            <label for="disciplina">Selecione a disciplina</label>
+            <select name="disciplina" id="">  
+                <option value=""></option>                      
+                <?php
+                    while($row = $result->fetch_assoc()) 
+                            echo "<option value='".$row['nome']."'>".$row['nome']."</option>";     
+                ?>
+            </select>
+
             <label for="nome">Nome</label>
             <input type="text"  name="nome" placeholder="Nome" /> 
 
@@ -62,14 +79,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <label>Créditos</label>
             <input type=""  name="creditos" placeholder="Créditos" /> 
 
-
             <label>Pre requisitos</label>
             <input type="number"  name="idprereq" placeholder="id da tabela requisitos" /> 
 
             <button type="submit"> Enviar</button>
-            <div class="submit-message">
+            <div>
                 <?php
-                    echo "$message";
+                    echo "<span>$message</span>";
                 ?>
             </div>   
            

@@ -17,6 +17,9 @@ header div{
     height: 100%;
     font-size: 1.1rem;
 }
+.links-title{
+    margin-bottom: 100px;
+}
 .links{
 
     display: flex;
@@ -37,16 +40,23 @@ header div{
 .links li a:hover{
    color:  #ddd;
 }
-.inserirDisciplinaForm{
-    display: flex;
-    justify-content: center;
-}
- form{
+.form{
     display: flex;
     justify-content: center;
     flex-direction: column;
+    align-items: center;
 }
- form input{
+.form-title{
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 50px 0 50px 0;
+}
+form{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;  
+}
+input, select{
     width: 300px;
     border: solid 1px #ccc;
     margin-bottom: 30px;
@@ -74,4 +84,19 @@ header div{
  }
 .sucess{
      color: blue;
+ }
+ .submit-message{
+     max-width: fit-content;
+ }
+
+ td,  th{
+    border-bottom:  1px solid #000;
+    border-right:  1px solid #000;
+    margin: 5px 10px 0 0;
+ }
+ td span, th span{
+     margin-right: 100px;
+ }
+ table{
+     margin-bottom: 100px;
  }
