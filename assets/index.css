@@ -55,6 +55,7 @@ form{
     display: flex;
     justify-content: center;
     flex-direction: column;  
+    max-width: 400px;
 }
 input, select{
     width: 300px;
@@ -63,6 +64,10 @@ input, select{
     height: 30px;
     border-radius: 3px;
     padding: 5px;
+}
+input[type="file"]{
+    width: 400px;
+    height: 35px;
 }
  form label{
     font-size: 0.9rem;
@@ -86,7 +91,10 @@ input, select{
      color: blue;
  }
  .submit-message{
-     max-width: fit-content;
+     width: 100%;
+     display: flex;
+     justify-content: center;
+     margin-top: 30px;
  }
 
  td,  th{

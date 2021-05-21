@@ -2,30 +2,40 @@
 
 $message = "";
 
+$host = "localhost";
+$user = "3daw_av1";
+$pass = "3daw_av1";
+$db = "av1_3daw";
+
+$db = new mysqli($host, $user, $pass, $db);
+
+if ($db->connect_error) {
+    die("Nao foi possivel conectar ao banco de dados: " . $db->connect_error);
+}
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    $host = "localhost";
-    $user = "3daw_av1";
-    $pass = "3daw_av1";
-    $db = "av1_3daw";
-
-    $db = new mysqli($host, $user, $pass, $db);
-
-    if ($db->connect_error) {
-        die("Nao foi possivel conectar ao banco de dados: " . $db->connect_error);
-    }
-    
     $nome      = $_POST['nome'];
     $creditos    = $_POST['creditos'];
     $periodo    = $_POST['periodo'];
-    $idPreReq    = $_POST['idprereq'];
+    $pre_requisito    = $_POST['pre_requisito'];
 
-    if (!$nome || !$creditos || !$periodo || !$idPreReq ){
+    if (!$nome || !$creditos || !$periodo){
         $message = "<span class='error'> Revise os campos e tente novamente. </span>";
+    }else if ( $nome == $pre_requisito){
+        $message = "<span class='error'> Nome e pré requisito não podem ser iguais. </span>";
     }
     else{
-        $sql = "Insert into disciplinas (`nome`, `periodo`, `creditos`, `idPreRequisito`) VALUES ('$nome',  '$periodo', '$creditos', '$idPreReq')";
-        if ($db->query($sql)  === true)
-            $message = "<span class='sucess'> Inserido com sucesso </span>";
+        $sql_id_prereq = "SELECT id FROM  disciplinas WHERE nome='$pre_requisito'";
+        $result = $db->query($sql_id_prereq);
+
+        if (!$result) die ("Can't make a sql query");
+
+        $id_prereq = $result->fetch_assoc();
+        $id_prereq =  $id_prereq == ""?  0:  $id_prereq['id'];
+        
+        $sqlInsertDisciplinas = "INSERT INTO disciplinas (nome, periodo, creditos, idPreRequisito)
+            VALUES ('$nome',  '$periodo', '$creditos', $id_prereq  )";
+
+        if ($db->query( $sqlInsertDisciplinas)  === true)  $message = "<span class='sucess'> Inserido com sucesso </span>";
         else $message = "<span class='error'> Não  foi possível inserir:  $db->error;</span>";
     }   
     
@@ -63,8 +73,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <input type=""  name="creditos" placeholder="Créditos" /> 
 
 
-            <label>Pre requisitos</label>
-            <input type="number"  name="idprereq" placeholder="id da tabela requisitos" /> 
+            <label for="pre_requisito">Selecione a disciplina</label>
+           
+            <select name="pre_requisito" id="">
+                <?php
+                    $sql = "SELECT nome FROM disciplinas";
+                    $result = $db->query($sql);  
+                ?>  
+                <option value=""></option>                      
+                <?php
+                    while($row = $result->fetch_assoc()) 
+                        echo "<option value='".$row['nome']."'>".$row['nome']."</option>";
+                ?>
+            </select>
 
             <button type="submit"> Enviar</button>
             <div class="submit-message">

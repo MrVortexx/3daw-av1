@@ -57,16 +57,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         </div>
         <form action="alterarDisciplinas.php" method="POST">
             <?php
-                    $sql = "SELECT nome FROM disciplinas";
-                    $result = $db->query($sql);  
+                $sql = "SELECT nome FROM disciplinas";
+                $result = $db->query($sql);  
+            ?>
 
-                    ?>
             <label for="disciplina">Selecione a disciplina</label>
             <select name="disciplina" id="">  
                 <option value=""></option>                      
                 <?php
                     while($row = $result->fetch_assoc()) 
-                            echo "<option value='".$row['nome']."'>".$row['nome']."</option>";     
+                        echo "<option value='".$row['nome']."'>".$row['nome']."</option>";     
                 ?>
             </select>
 
